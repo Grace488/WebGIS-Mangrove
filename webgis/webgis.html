@@ -1,0 +1,1108 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <style>
+            #map, body, html {
+                width: 100%;
+                height: 100%;
+            }
+            </style>
+            <title>GIS HUTAN MANGROVE PETENGORAN</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="data/ZonaMerged2_3.js"></script>
+        <script src="data/ZonaLayer_5.js"></script>
+        <script src="data/IndividuMangroveZona1_6.js"></script>
+        <script src="data/IndividuMangroveZona2_7.js"></script>
+        <script src="data/IndividuMangroveZona3_8.js"></script>
+        <script src="data/IndividuMangroveZona4_9.js"></script>
+        <script src="data/IndividuMangroveZona5_10.js"></script>
+        <script src="data/Jalan_11.js"></script>
+        <script src="data/Gazebo_12.js"></script>
+        <script src="data/Kapal_13.js"></script>
+        <script src="data/KawasanLaut_14.js"></script>
+        <script src="data/KawasanTambak_15.js"></script>
+        <script src="data/KawasanTanamanMangrove_16.js"></script>
+        <script src="data/KawasanTanamanBukanMangrove_17.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString' || e.target.feature.geometry.type === 'MultiLineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        }).fitBounds([[-5.571242478707437,105.23611003532613],[-5.560770629005138,105.25607594153564]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleSatellite_0');
+        map.getPane('pane_GoogleSatellite_0').style.zIndex = 400;
+        var layer_GoogleSatellite_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleSatellite_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_GoogleSatellite_0;
+        map.addLayer(layer_GoogleSatellite_0);
+        map.createPane('pane_basewilayah_1');
+        map.getPane('pane_basewilayah_1').style.zIndex = 401;
+        var img_basewilayah_1 = 'data/basewilayah_1.png';
+        var img_bounds_basewilayah_1 = [[-5.57422254684952,105.234377231267],[-5.56483958478952,105.244402504707]];
+        var layer_basewilayah_1 = new L.imageOverlay(img_basewilayah_1,
+                                              img_bounds_basewilayah_1,
+                                              {pane: 'pane_basewilayah_1'});
+        bounds_group.addLayer(layer_basewilayah_1);
+        map.addLayer(layer_basewilayah_1);
+        map.createPane('pane_StatusKehidupanMangrove_2');
+        map.getPane('pane_StatusKehidupanMangrove_2').style.zIndex = 402;
+        var img_StatusKehidupanMangrove_2 = 'data/StatusKehidupanMangrove_2.png';
+        var img_bounds_StatusKehidupanMangrove_2 = [[-5.572452177,105.236679798],[-5.56520601,105.243624481]];
+        var layer_StatusKehidupanMangrove_2 = new L.imageOverlay(img_StatusKehidupanMangrove_2,
+                                              img_bounds_StatusKehidupanMangrove_2,
+                                              {pane: 'pane_StatusKehidupanMangrove_2'});
+        bounds_group.addLayer(layer_StatusKehidupanMangrove_2);
+        function pop_ZonaMerged2_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nama</th>\
+                        <td>' + (feature.properties['Nama'] !== null ? autolinker.link(feature.properties['Nama'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Legenda</th>\
+                        <td>' + (feature.properties['Legenda'] !== null ? '<img style="height: 100px; width:100px" src="images/' + String(feature.properties['Legenda']).replace(/[\\\/:]/g, '_').trim() + '">' : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_ZonaMerged2_3_0() {
+            return {
+                pane: 'pane_ZonaMerged2_3',
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_ZonaMerged2_3');
+        map.getPane('pane_ZonaMerged2_3').style.zIndex = 403;
+        map.getPane('pane_ZonaMerged2_3').style['mix-blend-mode'] = 'normal';
+        var layer_ZonaMerged2_3 = new L.geoJson(json_ZonaMerged2_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_ZonaMerged2_3',
+            layerName: 'layer_ZonaMerged2_3',
+            pane: 'pane_ZonaMerged2_3',
+            onEachFeature: pop_ZonaMerged2_3,
+            style: style_ZonaMerged2_3_0,
+        });
+        bounds_group.addLayer(layer_ZonaMerged2_3);
+        map.createPane('pane_NDVIKerapatanMangrove_4');
+        map.getPane('pane_NDVIKerapatanMangrove_4').style.zIndex = 404;
+        var img_NDVIKerapatanMangrove_4 = 'data/NDVIKerapatanMangrove_4.png';
+        var img_bounds_NDVIKerapatanMangrove_4 = [[-5.572452932572766,105.23667998633694],[-5.565206309784994,105.24362512365077]];
+        var layer_NDVIKerapatanMangrove_4 = new L.imageOverlay(img_NDVIKerapatanMangrove_4,
+                                              img_bounds_NDVIKerapatanMangrove_4,
+                                              {pane: 'pane_NDVIKerapatanMangrove_4'});
+        bounds_group.addLayer(layer_NDVIKerapatanMangrove_4);
+        function pop_ZonaLayer_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nama</th>\
+                        <td>' + (feature.properties['Nama'] !== null ? autolinker.link(feature.properties['Nama'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Legenda</th>\
+                        <td>' + (feature.properties['Legenda'] !== null ? '<img style="height: 100px; width:100px" src="images/' + String(feature.properties['Legenda']).replace(/[\\\/:]/g, '_').trim() + '">' : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_ZonaLayer_5_0() {
+            return {
+                pane: 'pane_ZonaLayer_5',
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_ZonaLayer_5');
+        map.getPane('pane_ZonaLayer_5').style.zIndex = 405;
+        map.getPane('pane_ZonaLayer_5').style['mix-blend-mode'] = 'normal';
+        var layer_ZonaLayer_5 = new L.geoJson(json_ZonaLayer_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_ZonaLayer_5',
+            layerName: 'layer_ZonaLayer_5',
+            pane: 'pane_ZonaLayer_5',
+            onEachFeature: pop_ZonaLayer_5,
+            style: style_ZonaLayer_5_0,
+        });
+        bounds_group.addLayer(layer_ZonaLayer_5);
+        function pop_IndividuMangroveZona1_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                <tr>\
+                        <td><h3>' + 'Individu Mangrove Zona 1' + '</h3></td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Class</th>\
+                        <td>' + (feature.properties['Class'] !== null ? autolinker.link(feature.properties['Class'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Confidence</th>\
+                        <td>' + (feature.properties['Confidence'] !== null ? autolinker.link(feature.properties['Confidence'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Id</th>\
+                        <td>' + (feature.properties['Id'] !== null ? autolinker.link(feature.properties['Id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Jumlah</th>\
+                        <td>' + (feature.properties['Jumlah'] !== null ? autolinker.link(feature.properties['Jumlah'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_IndividuMangroveZona1_6_0() {
+            return {
+                pane: 'pane_IndividuMangroveZona1_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(157,186,72,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_IndividuMangroveZona1_6');
+        map.getPane('pane_IndividuMangroveZona1_6').style.zIndex = 406;
+        map.getPane('pane_IndividuMangroveZona1_6').style['mix-blend-mode'] = 'normal';
+        var layer_IndividuMangroveZona1_6 = new L.geoJson(json_IndividuMangroveZona1_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_IndividuMangroveZona1_6',
+            layerName: 'layer_IndividuMangroveZona1_6',
+            pane: 'pane_IndividuMangroveZona1_6',
+            onEachFeature: pop_IndividuMangroveZona1_6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_IndividuMangroveZona1_6_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_IndividuMangroveZona1_6);
+        function pop_IndividuMangroveZona2_7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                <tr>\
+                        <td><h3>' + 'Individu Mangrove Zona 2' + '</h3></td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Class</th>\
+                        <td>' + (feature.properties['Class'] !== null ? autolinker.link(feature.properties['Class'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Confidence</th>\
+                        <td>' + (feature.properties['Confidence'] !== null ? autolinker.link(feature.properties['Confidence'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Id</th>\
+                        <td>' + (feature.properties['Id'] !== null ? autolinker.link(feature.properties['Id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Jumlah</th>\
+                        <td>' + (feature.properties['Jumlah'] !== null ? autolinker.link(feature.properties['Jumlah'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_IndividuMangroveZona2_7_0() {
+            return {
+                pane: 'pane_IndividuMangroveZona2_7',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,60,57,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_IndividuMangroveZona2_7');
+        map.getPane('pane_IndividuMangroveZona2_7').style.zIndex = 407;
+        map.getPane('pane_IndividuMangroveZona2_7').style['mix-blend-mode'] = 'normal';
+        var layer_IndividuMangroveZona2_7 = new L.geoJson(json_IndividuMangroveZona2_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_IndividuMangroveZona2_7',
+            layerName: 'layer_IndividuMangroveZona2_7',
+            pane: 'pane_IndividuMangroveZona2_7',
+            onEachFeature: pop_IndividuMangroveZona2_7,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_IndividuMangroveZona2_7_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_IndividuMangroveZona2_7);
+        function pop_IndividuMangroveZona3_8(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                <tr>\
+                        <td><h3>' + 'Individu Mangrove Zona 3' + '</h3></td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Class</th>\
+                        <td>' + (feature.properties['Class'] !== null ? autolinker.link(feature.properties['Class'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Confidence</th>\
+                        <td>' + (feature.properties['Confidence'] !== null ? autolinker.link(feature.properties['Confidence'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Id</th>\
+                        <td>' + (feature.properties['Id'] !== null ? autolinker.link(feature.properties['Id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Jumlah</th>\
+                        <td>' + (feature.properties['Jumlah'] !== null ? autolinker.link(feature.properties['Jumlah'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_IndividuMangroveZona3_8_0() {
+            return {
+                pane: 'pane_IndividuMangroveZona3_8',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(113,206,232,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_IndividuMangroveZona3_8');
+        map.getPane('pane_IndividuMangroveZona3_8').style.zIndex = 408;
+        map.getPane('pane_IndividuMangroveZona3_8').style['mix-blend-mode'] = 'normal';
+        var layer_IndividuMangroveZona3_8 = new L.geoJson(json_IndividuMangroveZona3_8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_IndividuMangroveZona3_8',
+            layerName: 'layer_IndividuMangroveZona3_8',
+            pane: 'pane_IndividuMangroveZona3_8',
+            onEachFeature: pop_IndividuMangroveZona3_8,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_IndividuMangroveZona3_8_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_IndividuMangroveZona3_8);
+        function pop_IndividuMangroveZona4_9(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                <tr>\
+                        <td><h3>' + 'Individu Mangrove Zona 4' + '</h3></td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Class</th>\
+                        <td>' + (feature.properties['Class'] !== null ? autolinker.link(feature.properties['Class'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Confidence</th>\
+                        <td>' + (feature.properties['Confidence'] !== null ? autolinker.link(feature.properties['Confidence'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Id</th>\
+                        <td>' + (feature.properties['Id'] !== null ? autolinker.link(feature.properties['Id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Jumlah</th>\
+                        <td>' + (feature.properties['Jumlah'] !== null ? autolinker.link(feature.properties['Jumlah'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_IndividuMangroveZona4_9_0() {
+            return {
+                pane: 'pane_IndividuMangroveZona4_9',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(213,180,60,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_IndividuMangroveZona4_9');
+        map.getPane('pane_IndividuMangroveZona4_9').style.zIndex = 409;
+        map.getPane('pane_IndividuMangroveZona4_9').style['mix-blend-mode'] = 'normal';
+        var layer_IndividuMangroveZona4_9 = new L.geoJson(json_IndividuMangroveZona4_9, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_IndividuMangroveZona4_9',
+            layerName: 'layer_IndividuMangroveZona4_9',
+            pane: 'pane_IndividuMangroveZona4_9',
+            onEachFeature: pop_IndividuMangroveZona4_9,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_IndividuMangroveZona4_9_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_IndividuMangroveZona4_9);
+        function pop_IndividuMangroveZona5_10(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td><h3>' + 'Individu Mangrove Zona 5' + '</h3></td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Class</th>\
+                        <td>' + (feature.properties['Class'] !== null ? autolinker.link(feature.properties['Class'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Confidence</th>\
+                        <td>' + (feature.properties['Confidence'] !== null ? autolinker.link(feature.properties['Confidence'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Id</th>\
+                        <td>' + (feature.properties['Id'] !== null ? autolinker.link(feature.properties['Id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Jumlah</th>\
+                        <td>' + (feature.properties['Jumlah'] !== null ? autolinker.link(feature.properties['Jumlah'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_IndividuMangroveZona5_10_0() {
+            return {
+                pane: 'pane_IndividuMangroveZona5_10',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(141,90,153,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_IndividuMangroveZona5_10');
+        map.getPane('pane_IndividuMangroveZona5_10').style.zIndex = 410;
+        map.getPane('pane_IndividuMangroveZona5_10').style['mix-blend-mode'] = 'normal';
+        var layer_IndividuMangroveZona5_10 = new L.geoJson(json_IndividuMangroveZona5_10, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_IndividuMangroveZona5_10',
+            layerName: 'layer_IndividuMangroveZona5_10',
+            pane: 'pane_IndividuMangroveZona5_10',
+            onEachFeature: pop_IndividuMangroveZona5_10,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_IndividuMangroveZona5_10_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_IndividuMangroveZona5_10);
+        function pop_Jalan_11(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                <tr>\
+                        <td><h3>' + (feature.properties['Nama'] !== null ? autolinker.link(feature.properties['Nama'].toLocaleString()) : '') + '</h3></td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">fid</th>\
+                        <td>' + (feature.properties['fid'] !== null ? autolinker.link(feature.properties['fid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Jalan_11_0() {
+            return {
+                pane: 'pane_Jalan_11',
+                opacity: 1,
+                color: 'rgba(247,225,55,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,51,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Jalan_11');
+        map.getPane('pane_Jalan_11').style.zIndex = 411;
+        map.getPane('pane_Jalan_11').style['mix-blend-mode'] = 'normal';
+        var layer_Jalan_11 = new L.geoJson(json_Jalan_11, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Jalan_11',
+            layerName: 'layer_Jalan_11',
+            pane: 'pane_Jalan_11',
+            onEachFeature: pop_Jalan_11,
+            style: style_Jalan_11_0,
+        });
+        bounds_group.addLayer(layer_Jalan_11);
+        function pop_Gazebo_12(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                <tr>\
+                        <td><h3>' + (feature.properties['Nama'] !== null ? autolinker.link(feature.properties['Nama'].toLocaleString()) : '') + '</h3></td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">fid</th>\
+                        <td>' + (feature.properties['fid'] !== null ? autolinker.link(feature.properties['fid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Jumlah</th>\
+                        <td>' + (feature.properties['Jumlah'] !== null ? autolinker.link(feature.properties['Jumlah'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Gazebo_12_0() {
+            return {
+                pane: 'pane_Gazebo_12',
+                shape: 'square',
+                radius: 4.4,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(176,0,0,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Gazebo_12');
+        map.getPane('pane_Gazebo_12').style.zIndex = 412;
+        map.getPane('pane_Gazebo_12').style['mix-blend-mode'] = 'normal';
+        var layer_Gazebo_12 = new L.geoJson(json_Gazebo_12, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Gazebo_12',
+            layerName: 'layer_Gazebo_12',
+            pane: 'pane_Gazebo_12',
+            onEachFeature: pop_Gazebo_12,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Gazebo_12_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Gazebo_12);
+        function pop_Kapal_13(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                <tr>\
+                        <td><h3>' + (feature.properties['Nama'] !== null ? autolinker.link(feature.properties['Nama'].toLocaleString()) : '') + '</h3></td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">fid</th>\
+                        <td>' + (feature.properties['fid'] !== null ? autolinker.link(feature.properties['fid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Jumlah</th>\
+                        <td>' + (feature.properties['Jumlah'] !== null ? autolinker.link(feature.properties['Jumlah'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Kapal_13_0() {
+            return {
+                pane: 'pane_Kapal_13',
+                shape: 'triangle',
+                radius: 5.6,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,216,0,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Kapal_13');
+        map.getPane('pane_Kapal_13').style.zIndex = 413;
+        map.getPane('pane_Kapal_13').style['mix-blend-mode'] = 'normal';
+        var layer_Kapal_13 = new L.geoJson(json_Kapal_13, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Kapal_13',
+            layerName: 'layer_Kapal_13',
+            pane: 'pane_Kapal_13',
+            onEachFeature: pop_Kapal_13,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Kapal_13_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Kapal_13);
+        function pop_KawasanLaut_14(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                <tr>\
+                        <td><h3>' + (feature.properties['Nama'] !== null ? autolinker.link(feature.properties['Nama'].toLocaleString()) : '') + '</h3></td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Luas</th>\
+                        <td>' + (feature.properties['Luas'] !== null ? autolinker.link(feature.properties['Luas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_KawasanLaut_14_0() {
+            return {
+                pane: 'pane_KawasanLaut_14',
+                opacity: 1,
+                color: 'rgba(100,152,210,0.7)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(165,191,221,0.7)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_KawasanLaut_14');
+        map.getPane('pane_KawasanLaut_14').style.zIndex = 414;
+        map.getPane('pane_KawasanLaut_14').style['mix-blend-mode'] = 'normal';
+        var layer_KawasanLaut_14 = new L.geoJson(json_KawasanLaut_14, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_KawasanLaut_14',
+            layerName: 'layer_KawasanLaut_14',
+            pane: 'pane_KawasanLaut_14',
+            onEachFeature: pop_KawasanLaut_14,
+            style: style_KawasanLaut_14_0,
+        });
+        bounds_group.addLayer(layer_KawasanLaut_14);
+        map.addLayer(layer_KawasanLaut_14);
+        function pop_KawasanTambak_15(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                <tr>\
+                        <td><h3>' + (feature.properties['Nama'] !== null ? autolinker.link(feature.properties['Nama'].toLocaleString()) : '') + '</h3></td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Luas</th>\
+                        <td>' + (feature.properties['Luas'] !== null ? autolinker.link(feature.properties['Luas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_KawasanTambak_15_0() {
+            return {
+                pane: 'pane_KawasanTambak_15',
+                opacity: 1,
+                color: 'rgba(133,36,23,0.8)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(205,45,37,0.8)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_KawasanTambak_15');
+        map.getPane('pane_KawasanTambak_15').style.zIndex = 415;
+        map.getPane('pane_KawasanTambak_15').style['mix-blend-mode'] = 'normal';
+        var layer_KawasanTambak_15 = new L.geoJson(json_KawasanTambak_15, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_KawasanTambak_15',
+            layerName: 'layer_KawasanTambak_15',
+            pane: 'pane_KawasanTambak_15',
+            onEachFeature: pop_KawasanTambak_15,
+            style: style_KawasanTambak_15_0,
+        });
+        bounds_group.addLayer(layer_KawasanTambak_15);
+        map.addLayer(layer_KawasanTambak_15);
+        function pop_KawasanTanamanMangrove_16(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                <tr>\
+                        <td><h3>' + (feature.properties['Nama'] !== null ? autolinker.link(feature.properties['Nama'].toLocaleString()) : '') + '</h3></td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">layer</th>\
+                        <td>' + (feature.properties['layer'] !== null ? autolinker.link(feature.properties['layer'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">luas</th>\
+                        <td>' + (feature.properties['luas'] !== null ? autolinker.link(feature.properties['luas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_KawasanTanamanMangrove_16_0() {
+            return {
+                pane: 'pane_KawasanTanamanMangrove_16',
+                opacity: 1,
+                color: 'rgba(22,110,29,0.8)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,194,16,0.8)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_KawasanTanamanMangrove_16');
+        map.getPane('pane_KawasanTanamanMangrove_16').style.zIndex = 416;
+        map.getPane('pane_KawasanTanamanMangrove_16').style['mix-blend-mode'] = 'normal';
+        var layer_KawasanTanamanMangrove_16 = new L.geoJson(json_KawasanTanamanMangrove_16, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_KawasanTanamanMangrove_16',
+            layerName: 'layer_KawasanTanamanMangrove_16',
+            pane: 'pane_KawasanTanamanMangrove_16',
+            onEachFeature: pop_KawasanTanamanMangrove_16,
+            style: style_KawasanTanamanMangrove_16_0,
+        });
+        bounds_group.addLayer(layer_KawasanTanamanMangrove_16);
+        map.addLayer(layer_KawasanTanamanMangrove_16);
+        function pop_KawasanTanamanBukanMangrove_17(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                <tr>\
+                        <td><h3>' + (feature.properties['Nama'] !== null ? autolinker.link(feature.properties['Nama'].toLocaleString()) : '') + '</h3></td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Luas</th>\
+                        <td>' + (feature.properties['Luas'] !== null ? autolinker.link(feature.properties['Luas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_KawasanTanamanBukanMangrove_17_0() {
+            return {
+                pane: 'pane_KawasanTanamanBukanMangrove_17',
+                opacity: 1,
+                color: 'rgba(232,151,0,0.8)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,204,1,0.8)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_KawasanTanamanBukanMangrove_17');
+        map.getPane('pane_KawasanTanamanBukanMangrove_17').style.zIndex = 417;
+        map.getPane('pane_KawasanTanamanBukanMangrove_17').style['mix-blend-mode'] = 'normal';
+        var layer_KawasanTanamanBukanMangrove_17 = new L.geoJson(json_KawasanTanamanBukanMangrove_17, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_KawasanTanamanBukanMangrove_17',
+            layerName: 'layer_KawasanTanamanBukanMangrove_17',
+            pane: 'pane_KawasanTanamanBukanMangrove_17',
+            onEachFeature: pop_KawasanTanamanBukanMangrove_17,
+            style: style_KawasanTanamanBukanMangrove_17_0,
+        });
+        bounds_group.addLayer(layer_KawasanTanamanBukanMangrove_17);
+        map.addLayer(layer_KawasanTanamanBukanMangrove_17);
+        var baseMaps = {};
+        var overlaysTree = [
+        {label: '<b>Fungsi Kawasan</b>', selectAllCheckbox: true, children: [
+            {label: '<img src="legend/KawasanTanamanBukanMangrove_17.png" /> Kawasan Tanaman Bukan Mangrove', layer: layer_KawasanTanamanBukanMangrove_17},
+            {label: '<img src="legend/KawasanTanamanMangrove_16.png" /> Kawasan Tanaman Mangrove', layer: layer_KawasanTanamanMangrove_16},
+            {label: '<img src="legend/KawasanTambak_15.png" /> Kawasan Tambak', layer: layer_KawasanTambak_15},
+            {label: '<img src="legend/KawasanLaut_14.png" /> Kawasan Laut', layer: layer_KawasanLaut_14},]},
+        {label: '<b>Fasilitas Mangrove</b>', selectAllCheckbox: true, children: [
+            {label: '<img src="legend/Kapal_13.png" /> Kapal', layer: layer_Kapal_13},
+            {label: '<img src="legend/Gazebo_12.png" /> Gazebo', layer: layer_Gazebo_12},
+            {label: '<img src="legend/Jalan_11.png" /> Jalan', layer: layer_Jalan_11},]},
+        {label: '<b>Jumlah Individu Mangrove</b>', selectAllCheckbox: true, children: [
+            {label: '<img src="legend/IndividuMangroveZona5_10.png" /> Individu Mangrove Zona 5', layer: layer_IndividuMangroveZona5_10},
+            {label: '<img src="legend/IndividuMangroveZona4_9.png" /> Individu Mangrove Zona 4', layer: layer_IndividuMangroveZona4_9},
+            {label: '<img src="legend/IndividuMangroveZona3_8.png" /> Individu Mangrove Zona 3', layer: layer_IndividuMangroveZona3_8},
+            {label: '<img src="legend/IndividuMangroveZona2_7.png" /> Individu Mangrove Zona 2', layer: layer_IndividuMangroveZona2_7},
+            {label: '<img src="legend/IndividuMangroveZona1_6.png" /> Individu Mangrove Zona 1', layer: layer_IndividuMangroveZona1_6},]},
+        {label: '<b>NDVI Kerapatan Mangrove</b>', selectAllCheckbox: true, children: [
+            {label: '<img src="legend/ZonaLayer_5.png" /> Zona Layer', layer: layer_ZonaLayer_5},
+            {label: "NDVI Kerapatan Mangrove", layer: layer_NDVIKerapatanMangrove_4},]},
+        {label: '<b>Status Kehidupan Mangrove</b>', selectAllCheckbox: true, children: [
+            {label: '<img src="legend/ZonaMerged2_3.png" /> Zona Merged2', layer: layer_ZonaMerged2_3},
+            {label: "Status Kehidupan Mangrove", layer: layer_StatusKehidupanMangrove_2},]},
+            {label: "base wilayah", layer: layer_basewilayah_1},
+            {label: "Google Satellite", layer: layer_GoogleSatellite_0},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: true,
+        });
+        lay.addTo(map);
+        setBounds();
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        </script>
+    </body>
+</html>
